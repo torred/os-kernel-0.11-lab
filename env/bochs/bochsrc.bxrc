@@ -1,0 +1,18 @@
+megs: 16
+
+romimage:    file=$BXSHARE/BIOS-bochs-latest
+vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+
+floppya: 1_44="images/Image", status=inserted
+floppyb: 1_44="rootfs/rootimage-0.11", status=inserted
+ata0-master: type=disk, path="rootfs/hdc-0.11.img", mode=flat, cylinders=204, heads=16, spt=38
+boot: a
+
+# This is for macos.
+display_library: $BOCHS_DISP_LIB
+
+keyboard: type=mf, serial_delay=200, paste_delay=100000
+keyboard: keymap=$BXSHARE/keymaps/$BOCHS_KEYBOARD
+mouse: enabled=1
+
+log: images/bochsout.txt

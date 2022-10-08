@@ -1,0 +1,97 @@
+# Allow to run kernel on different emulators with different prebuilt rootfs
+
+# Rootfs preparation
+hda:
+	@make hda -C rootfs
+
+flp:
+	@make flp -C rootfs
+
+ramfs:
+	@make ramfs -C rootfs
+
+# VM (Qemu/Bochs) Setting for different rootfs
+ROOT_RAM = 0000
+ROOT_FDB = 021d
+ROOT_HDA = 0301
+
+SETROOTDEV_CMD = $(SETROOTDEV) images/Image
+SETROOTDEV_CMD_RAM = $(SETROOTDEV_CMD) $(ROOT_RAM) rootfs/$(RAM_IMG)
+SETROOTDEV_CMD_FDB = $(SETROOTDEV_CMD) $(ROOT_FDB)
+SETROOTDEV_CMD_HDA = $(SETROOTDEV_CMD) $(ROOT_HDA)
+
+nullstring :=
+QEMU_DBG = $(nullstring) -s -S -gdb tcp::1234 #-nographic #-serial '/dev/ttyS0'" # $(QEMU) -m 16M -boot a -fda Image -hda $(HDA_IMG) -s -S
+QEMU_CMD = $(QEMU)      #$(QEMU) -m 16M -boot a -fda Image -hda $(HDA_IMG)
+
+QEMU_CMD_PARA = -m 16M -boot a -fda images/Image   #$(QEMU) -m 16M -boot a -fda Image -hda $(HDA_IMG)
+QEMU_CMD_FDB_PARA = $(QEMU_CMD_PARA) -fdb rootfs/$(FLP_IMG)
+QEMU_CMD_HDA_PARA = $(QEMU_CMD_PARA) -hda rootfs/$(HDA_IMG)
+
+BOCHS_DBG = .dbg
+BOCHS_CMD = $(BOCHS)
+
+BOCHS_CMD_RC = -f $(BOCHS_RC)/bochsrc-fda.bxrc
+BOCHS_CMD_FDB_RC = -f $(BOCHS_RC)/bochsrc-fdb.bxrc
+BOCHS_CMD_HDA_RC = -f $(BOCHS_RC)/bochsrc-hd.bxrc
+
+VM = $(shell cat $(VM_CFG))
+
+ifeq ($(VM), bochs)
+	NEW_VM=qemu
+else
+	NEW_VM=bochs
+endif
+
+switch:
+	@echo "Current emulator: $(VM)"
+	@echo "Switch to emulator: $(NEW_VM)"
+	@echo $(NEW_VM) > $(VM_CFG)
+
+VM = $(shell cat $(VM_CFG))
+
+ifeq ($(VM), bochs)
+	VM_CMD = $(BOCHS_CMD)
+	VM_CMD_PARA = $(BOCHS_CMD_RC)
+	VM_CMD_FDB_PARA = $(BOCHS_CMD_FDB_RC)
+	VM_CMD_HDA_PARA = $(BOCHS_CMD_HDA_RC)
+	VM_CMD_DBG_SUFFIX = $(BOCHS_DBG)
+	VM_RC_DBG_SUFFIX = $(BOCHS_DBG)
+else
+	VM_CMD = $(QEMU_CMD)
+	VM_CMD_PARA = $(QEMU_CMD_PARA)
+	VM_CMD_FDB_PARA = $(QEMU_CMD_FDB_PARA)
+	VM_CMD_HDA_PARA = $(QEMU_CMD_HDA_PARA)
+	VM_CMD_DBG_SUFFIX =
+	VM_RC_DBG_SUFFIX = $(QEMU_DBG)
+endif
+
+# Running on emulators with differrent rootfs
+ramdisk-boot:
+	@make -B init/main.o RAMDISK=2048 # Force init/main.o build with ramdisk support
+
+start: ramdisk-boot Image
+	@$(SETROOTDEV_CMD_RAM)
+	@$(VM_CMD) $(VM_CMD_PARA)
+
+start-fd: Image flp
+	@$(SETROOTDEV_CMD_FDB)
+	@$(VM_CMD) $(VM_CMD_FDB_PARA)
+
+start-hd: Image hda
+	@$(SETROOTDEV_CMD_HDA)
+	@$(VM_CMD) $(VM_CMD_HDA_PARA)
+
+# Debugging the above targets
+debug: ramdisk-boot Image
+	@$(SETROOTDEV_CMD_RAM)
+	@$(VM_CMD)$(VM_CMD_DBG_SUFFIX) $(VM_CMD_PARA)$(VM_RC_DBG_SUFFIX)
+
+debug-fd: Image flp
+	@$(SETROOTDEV_CMD_FDB)
+	@$(VM_CMD)$(VM_CMD_DBG_SUFFIX) $(VM_CMD_FDB_PARA)$(VM_RC_DBG_SUFFIX)
+
+debug-hd: Image hda
+	@$(SETROOTDEV_CMD_HDA)
+	@$(VM_CMD)$(VM_CMD_DBG_SUFFIX) $(VM_CMD_HDA_PARA)$(VM_RC_DBG_SUFFIX)
+
