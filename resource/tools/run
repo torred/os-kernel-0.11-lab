@@ -1,0 +1,3 @@
+#!/bin/sh
+
+$BOCHS_HOME/bin/bochs -q -f $OS_LAB_ENV/bochs/bochsrc.bxrc
