@@ -16,7 +16,7 @@
  * but I don't like programming floppies, and I have only one anyway.
  * Urgel. I should check for more errors, and do more graceful error
  * recovery. Seems there are problems with several drives. I've tried to
- * correct them. No promises. 
+ * correct them. No promises.
  */
 
 /*
@@ -241,7 +241,7 @@ static void bad_flp_intr(void)
 		reset = 1;
 	else
 		recalibrate = 1;
-}	
+}
 
 /*
  * Ok, this interrupt is called after a DMA read/write has succeeded,
@@ -365,7 +365,7 @@ static void recalibrate_floppy(void)
 	current_track = 0;
 	do_floppy = recal_interrupt;
 	output_byte(FD_RECALIBRATE);
-	current_drive = CURRENT_DEV;    /* add for linux print "Reset-floppy called",not add MacOS print "Reset-floppy called" */
+	current_drive = CURRENT_DEV;    /* Not add this line, bochs running can print "Reset-floppy called" */
 	output_byte(head<<2 | current_drive);
 	if (reset)
 		do_fd_request();

@@ -1,8 +1,9 @@
 OS := $(shell uname)
+PWD := $(shell pwd)
 
 # >>>> 实验环境设置
 # ---------------------------------------------------------
-export OS_LAB_ROOT=$(HOME)/Workspace/kernel/os-linux-0.11-lab
+export OS_LAB_ROOT=$(PWD)
 export OS_LAB_ENV=$(OS_LAB_ROOT)/env
 export OS_LAB_TOOLS=$(OS_LAB_ROOT)/tools
 
