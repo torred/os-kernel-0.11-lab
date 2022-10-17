@@ -92,6 +92,7 @@ static struct floppy_struct {
 	{ 1440, 9,2,80,0,0x23,0x01,0xDF },	/* 720kB in 1.2MB drive */
 	{ 2880,18,2,80,0,0x1B,0x00,0xCF },	/* 1.44MB diskette */
 };
+
 /*
  * Rate is 0 for 500kb/s, 2 for 300kbps, 1 for 250kbps
  * Spec1 is 0xSH, where S is stepping rate (F=1ms, E=2ms, D=3ms etc),
@@ -455,9 +456,16 @@ void do_fd_request(void)
 	add_timer(ticks_to_floppy_on(current_drive),&floppy_on_interrupt);
 }
 
+
+/**
+ * 软盘初始化
+ * @param[in]	void
+ * @retval		void
+ */
+
 void floppy_init(void)
 {
 	blk_dev[MAJOR_NR].request_fn = DEVICE_REQUEST;
-	set_trap_gate(0x26,&floppy_interrupt);
+	set_trap_gate(0x26, &floppy_interrupt);
 	outb(inb_p(0x21)&~0x40,0x21);
 }

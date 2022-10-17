@@ -20,7 +20,7 @@ extern int vsprintf(char * buf, const char * fmt, va_list args);
 
 int printk(const char *fmt, ...)
 {
-	va_list args;
+	va_list args; // Args start address
 	int i;
 
 	va_start(args, fmt);

@@ -11,7 +11,7 @@
 #include <signal.h>
 
 void do_exit(int error_code);
-
+  
 int sys_sgetmask()
 {
 	return current->blocked;
@@ -41,8 +41,9 @@ static inline void get_new(char * from,char * to)
 {
 	int i;
 
-	for (i=0 ; i< sizeof(struct sigaction) ; i++)
+	for (i=0 ; i< sizeof(struct sigaction) ; i++) {
 		*(to++) = get_fs_byte(from++);
+	}
 }
 
 int sys_signal(int signum, long handler, long restorer)
@@ -79,6 +80,10 @@ int sys_sigaction(int signum, const struct sigaction * action,
 	return 0;
 }
 
+/*
+ * Routine writes a core dump image in the current directory.
+ * Currently not implemented.
+ */
 void do_signal(long signr,long eax, long ebx, long ecx, long edx,
 	long fs, long es, long ds,
 	long eip, long cs, long eflags,
@@ -88,6 +93,7 @@ void do_signal(long signr,long eax, long ebx, long ecx, long edx,
 	long old_eip=eip;
 	struct sigaction * sa = current->sigaction + signr - 1;
 	int longs;
+
 	unsigned long * tmp_esp;
 
 	sa_handler = (unsigned long) sa->sa_handler;
@@ -99,6 +105,9 @@ void do_signal(long signr,long eax, long ebx, long ecx, long edx,
 		else
 			do_exit(1<<(signr-1));
 	}
+	/*
+	 * OK, we're invoking a handler 
+	 */
 	if (sa->sa_flags & SA_ONESHOT)
 		sa->sa_handler = NULL;
 	*(&eip) = sa_handler;

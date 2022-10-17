@@ -13,6 +13,9 @@
  * Hopefully this will be a rather complete VT102 implementation.
  *
  * Beeping thanks to John T Kohl.
+ * 
+ * Virtual Consoles, Screen Blanking, Screen Dumping, Color, Graphics
+ *   Chars, and VT100 enhancements by Peter MacDonald.
  */
 
 /*
@@ -46,24 +49,24 @@
 #define ORIG_VIDEO_EGA_BX	(*(unsigned short *)0x9000a)
 #define ORIG_VIDEO_EGA_CX	(*(unsigned short *)0x9000c)
 
-#define VIDEO_TYPE_MDA		0x10	/* Monochrome Text Display	*/
-#define VIDEO_TYPE_CGA		0x11	/* CGA Display 			*/
-#define VIDEO_TYPE_EGAM		0x20	/* EGA/VGA in Monochrome Mode	*/
-#define VIDEO_TYPE_EGAC		0x21	/* EGA/VGA in Color Mode	*/
+#define VIDEO_TYPE_MDA		0x10	/* Monochrome Text Display */
+#define VIDEO_TYPE_CGA		0x11	/* CGA Display */
+#define VIDEO_TYPE_EGAM		0x20	/* EGA/VGA in Monochrome Mode */
+#define VIDEO_TYPE_EGAC		0x21	/* EGA/VGA in Color Mode */
 
 #define NPAR 16
 
 extern void keyboard_interrupt(void);
 
-static unsigned char	video_type;		/* Type of display being used	*/
-static unsigned long	video_num_columns;	/* Number of text columns	*/
-static unsigned long	video_size_row;		/* Bytes per row		*/
-static unsigned long	video_num_lines;	/* Number of test lines		*/
-static unsigned char	video_page;		/* Initial video page		*/
+static unsigned char	video_type;		    /* Type of display being used */
+static unsigned long	video_num_columns;	/* Number of text columns */
+static unsigned long	video_size_row;		/* Bytes per row */
+static unsigned long	video_num_lines;	/* Number of test lines	*/
+static unsigned char	video_page;		    /* Initial video page */
 static unsigned long	video_mem_start;	/* Start of video RAM		*/
 static unsigned long	video_mem_end;		/* End of video RAM (sort of)	*/
-static unsigned short	video_port_reg;		/* Video register select port	*/
-static unsigned short	video_port_val;		/* Video register value port	*/
+static unsigned short	video_port_reg;		/* Video register select port */
+static unsigned short	video_port_val;		/* Video register value port */
 static unsigned short	video_erase_char;	/* Char+Attrib to erase with	*/
 
 static unsigned long	origin;		/* Used for EGA/VGA fast scroll	*/
@@ -89,9 +92,9 @@ static inline void gotoxy(unsigned int new_x,unsigned int new_y)
 {
 	if (new_x > video_num_columns || new_y >= video_num_lines)
 		return;
-	x=new_x;
-	y=new_y;
-	pos=origin + y*video_size_row + (x<<1);
+	x = new_x;
+	y = new_y;
+	pos = origin + y*video_size_row + (x<<1);
 }
 
 static inline void set_origin(void)

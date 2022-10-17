@@ -16,15 +16,25 @@
 int sys_pause(void);
 int sys_close(int fd);
 
-void release(struct task_struct * p)
+
+/** 
+ * 释放指定进程占用的任务槽及其任务数据结构占用的内在页面
+ * 该函数在后面的sys_kill()和sys_waitpid()函数中被调用。扫描任务指针数组表task[]以寻找指定的任
+ * 务。如果找到，则首先清空该任务槽，然后释放该任务数据结构所占用的内在页面，最后执行调度函数并
+ * 返回立即退出。如果在任务数组表中没有找到指定任务对应的项，则内核panic。
+ * @param[in]	p		任务数据结构指针
+ * @retval		void
+ */
+/*static*/ void release(struct task_struct * p)
 {
 	int i;
 
 	if (!p)
 		return;
-	for (i=1 ; i<NR_TASKS ; i++)
-		if (task[i]==p) {
-			task[i]=NULL;
+	for (i = 1 ; i < NR_TASKS ; i++)
+		if (task[i] == p) {
+			task[i] = NULL;
+			/* Update links */
 			free_page((long)p);
 			schedule();
 			return;
@@ -102,6 +112,7 @@ static void tell_father(int pid)
 int do_exit(long code)
 {
 	int i;
+
 	free_page_tables(get_base(current->ldt[1]),get_limit(0x0f));
 	free_page_tables(get_base(current->ldt[2]),get_limit(0x17));
 	for (i=0 ; i<NR_TASKS ; i++)
@@ -115,11 +126,11 @@ int do_exit(long code)
 		if (current->filp[i])
 			sys_close(i);
 	iput(current->pwd);
-	current->pwd=NULL;
+	current->pwd = NULL;
 	iput(current->root);
-	current->root=NULL;
+	current->root = NULL;
 	iput(current->executable);
-	current->executable=NULL;
+	current->executable = NULL;
 	if (current->leader && current->tty >= 0)
 		tty_table[current->tty].pgrp = 0;
 	if (last_task_used_math == current)
@@ -133,6 +144,7 @@ int do_exit(long code)
 	return (-1);	/* just to suppress warnings */
 }
 
+/* int -> void */
 int sys_exit(int error_code)
 {
 	return do_exit((error_code&0xff)<<8);

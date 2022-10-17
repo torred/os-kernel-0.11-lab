@@ -4,7 +4,7 @@
  *  (C) 1991  Linus Torvalds
  */
 
-#ifndef __GNUC__
+#ifndef __GNUC__                /* 需要GNU的C编译器编译 */
 #error I want gcc!
 #endif
 

@@ -8,8 +8,16 @@
  * 'tty_io.c' gives an orthogonal feeling to tty's, be they consoles
  * or rs-channels. It also implements echoing, cooked mode etc.
  *
- * Kill-line thanks to John T Kohl.
+ * Kill-line thanks to John T Kohl, who also corrected VMIN = VTIME = 0.
  */
+
+/*
+ * 'tty_io.c'给tty终端一种非相关的感觉,不管它们是控制台还是串行终端.该程序同样实现了回显，规
+ * 范(熟)模式等.
+ * Kill-line，谢谢 John T Kohl。他同时还纠正了当 VMIN = VTIME = 0 时的问题。
+ */
+
+
 #include <ctype.h>
 #include <errno.h>
 #include <signal.h>
@@ -25,22 +33,22 @@
 #include <asm/segment.h>
 #include <asm/system.h>
 
-#define _L_FLAG(tty,f)	((tty)->termios.c_lflag & f)
-#define _I_FLAG(tty,f)	((tty)->termios.c_iflag & f)
-#define _O_FLAG(tty,f)	((tty)->termios.c_oflag & f)
+#define _L_FLAG(tty,f)  ((tty)->termios.c_lflag & f)
+#define _I_FLAG(tty,f)  ((tty)->termios.c_iflag & f)
+#define _O_FLAG(tty,f)  ((tty)->termios.c_oflag & f)
 
-#define L_CANON(tty)	_L_FLAG((tty),ICANON)
-#define L_ISIG(tty)	_L_FLAG((tty),ISIG)
-#define L_ECHO(tty)	_L_FLAG((tty),ECHO)
-#define L_ECHOE(tty)	_L_FLAG((tty),ECHOE)
-#define L_ECHOK(tty)	_L_FLAG((tty),ECHOK)
-#define L_ECHOCTL(tty)	_L_FLAG((tty),ECHOCTL)
-#define L_ECHOKE(tty)	_L_FLAG((tty),ECHOKE)
+#define L_CANON(tty)    _L_FLAG((tty),ICANON)
+#define L_ISIG(tty)     _L_FLAG((tty),ISIG)
+#define L_ECHO(tty)     _L_FLAG((tty),ECHO)
+#define L_ECHOE(tty)    _L_FLAG((tty),ECHOE)
+#define L_ECHOK(tty)    _L_FLAG((tty),ECHOK)
+#define L_ECHOCTL(tty)  _L_FLAG((tty),ECHOCTL)
+#define L_ECHOKE(tty)   _L_FLAG((tty),ECHOKE)
 
-#define I_UCLC(tty)	_I_FLAG((tty),IUCLC)
-#define I_NLCR(tty)	_I_FLAG((tty),INLCR)
-#define I_CRNL(tty)	_I_FLAG((tty),ICRNL)
-#define I_NOCR(tty)	_I_FLAG((tty),IGNCR)
+#define I_UCLC(tty)     _I_FLAG((tty),IUCLC)
+#define I_NLCR(tty)     _I_FLAG((tty),INLCR)
+#define I_CRNL(tty)     _I_FLAG((tty),ICRNL)
+#define I_NOCR(tty)     _I_FLAG((tty),IGNCR)
 
 #define O_POST(tty)	_O_FLAG((tty),OPOST)
 #define O_NLCR(tty)	_O_FLAG((tty),ONLCR)
@@ -157,7 +165,7 @@ void copy_to_cooked(struct tty_struct * tty)
 		else if (c==10 && I_NLCR(tty))
 			c=13;
 		if (I_UCLC(tty))
-			c=tolower(c);
+			c = tolower(c);
 		if (L_CANON(tty)) {
 			if (c==KILL_CHAR(tty)) {
 				/* deal with killing the input line */
@@ -245,7 +253,7 @@ int tty_read(unsigned channel, char * buf, int nr)
 			current->alarm = time+jiffies;
 	}
 	if (minimum>nr)
-		minimum=nr;
+		minimum = nr;
 	while (nr>0) {
 		if (flag && (current->signal & ALRMMASK)) {
 			current->signal &= ~ALRMMASK;
@@ -290,9 +298,9 @@ int tty_read(unsigned channel, char * buf, int nr)
 
 int tty_write(unsigned channel, char * buf, int nr)
 {
-	static int cr_flag=0;
+	static int cr_flag = 0;
 	struct tty_struct * tty;
-	char c, *b=buf;
+	char c, *b = buf;
 
 	if (channel>2 || nr<0) return -1;
 	tty = channel + tty_table;

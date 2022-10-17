@@ -10,7 +10,11 @@ flp:
 ramfs:
 	@make ramfs -C rootfs
 
-# VM (Qemu/Bochs) Setting for different rootfs
+
+# ROOT_DEV specifies the default root-device when making the image.
+# This can be either FLOPPY, /dev/xxxx or empty, in which case the
+# default of /dev/hd6 is used by 'build'.
+#
 ROOT_RAM = 0000
 ROOT_FDB = 021d
 ROOT_HDA = 0301
@@ -20,6 +24,8 @@ SETROOTDEV_CMD_RAM = $(SETROOTDEV_CMD) $(ROOT_RAM) rootfs/$(RAM_IMG)
 SETROOTDEV_CMD_FDB = $(SETROOTDEV_CMD) $(ROOT_FDB)
 SETROOTDEV_CMD_HDA = $(SETROOTDEV_CMD) $(ROOT_HDA)
 
+# VM (Qemu/Bochs) Setting for different rootfs
+#
 nullstring :=
 QEMU_DBG = $(nullstring) -s -S -gdb tcp::1234 #-nographic #-serial '/dev/ttyS0'" # $(QEMU) -m 16M -boot a -fda Image -hda $(HDA_IMG) -s -S
 QEMU_CMD = $(QEMU)      #$(QEMU) -m 16M -boot a -fda Image -hda $(HDA_IMG)

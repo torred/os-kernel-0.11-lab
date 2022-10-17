@@ -160,7 +160,7 @@ int sys_setup(void * BIOS)
 
 static int controller_ready(void)
 {
-	int retries=100000;
+	int retries = 100000;
 
 	while (--retries && (inb_p(HD_STATUS)&0x80));
 	return (retries);
@@ -229,7 +229,8 @@ static void reset_controller(void)
 
 static void reset_hd(int nr)
 {
-	reset_controller();
+
+		reset_controller();
 	hd_out(nr,hd_info[nr].sect,hd_info[nr].sect,hd_info[nr].head-1,
 		hd_info[nr].cyl,WIN_SPECIFY,&recal_intr);
 }
@@ -290,6 +291,7 @@ static void recal_intr(void)
 		bad_rw_intr();
 	do_hd_request();
 }
+
 
 void do_hd_request(void)
 {

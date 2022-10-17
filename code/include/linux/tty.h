@@ -33,20 +33,21 @@ struct tty_queue {
 #define PUTCH(c,queue) \
 (void)({(queue).buf[(queue).head]=(c);INC((queue).head);})
 
-#define INTR_CHAR(tty) ((tty)->termios.c_cc[VINTR])
-#define QUIT_CHAR(tty) ((tty)->termios.c_cc[VQUIT])
-#define ERASE_CHAR(tty) ((tty)->termios.c_cc[VERASE])
-#define KILL_CHAR(tty) ((tty)->termios.c_cc[VKILL])
-#define EOF_CHAR(tty) ((tty)->termios.c_cc[VEOF])
-#define START_CHAR(tty) ((tty)->termios.c_cc[VSTART])
-#define STOP_CHAR(tty) ((tty)->termios.c_cc[VSTOP])
-#define SUSPEND_CHAR(tty) ((tty)->termios.c_cc[VSUSP])
+#define INTR_CHAR(tty)		((tty)->termios.c_cc[VINTR])
+#define QUIT_CHAR(tty)		((tty)->termios.c_cc[VQUIT])
+#define ERASE_CHAR(tty)		((tty)->termios.c_cc[VERASE])
+#define KILL_CHAR(tty)		((tty)->termios.c_cc[VKILL])
+#define EOF_CHAR(tty)		((tty)->termios.c_cc[VEOF])
+#define START_CHAR(tty)		((tty)->termios.c_cc[VSTART])
+#define STOP_CHAR(tty)		((tty)->termios.c_cc[VSTOP])
+#define SUSPEND_CHAR(tty)	((tty)->termios.c_cc[VSUSP])
 
+/* tty数据结构 */
 struct tty_struct {
-	struct termios termios;
-	int pgrp;
-	int stopped;
-	void (*write)(struct tty_struct * tty);
+	struct termios termios;		/* 终端io属性和控制字符数据结构 */
+	int pgrp;					/* 所属进程组 */
+	int stopped;				/* 停止标志 */
+	void (*write)(struct tty_struct * tty);	/* tty写函数指针 */
 	struct tty_queue read_q;
 	struct tty_queue write_q;
 	struct tty_queue secondary;

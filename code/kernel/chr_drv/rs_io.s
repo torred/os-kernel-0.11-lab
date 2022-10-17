@@ -11,7 +11,7 @@
  */
 
 .text
-.globl rs1_interrupt,rs2_interrupt
+.globl rs1_interrupt, rs2_interrupt
 
 size	= 1024				/* must be power of two !
 					   and must match the value

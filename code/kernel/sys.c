@@ -48,6 +48,17 @@ int sys_prof()
 	return -ENOSYS;
 }
 
+/*
+ * This is done BSD-style, with no consideration of the saved gid, except
+ * that if you set the effective gid, it sets the saved gid too.  This 
+ * makes it possible for a setgid program to completely drop its privileges,
+ * which is often a useful assertion to make when you are doing a security
+ * audit over a program.
+ *
+ * The general idea is that a program which uses just setregid() will be
+ * 100% compatible with BSD.  A program which uses just setgid() will be
+ * 100% compatible with POSIX w/ Saved ID's. 
+ */
 int sys_setregid(int rgid, int egid)
 {
 	if (rgid>0) {
@@ -61,14 +72,17 @@ int sys_setregid(int rgid, int egid)
 		if ((current->gid == egid) ||
 		    (current->egid == egid) ||
 		    (current->sgid == egid) ||
-		    suser())
+		    suser()) {
 			current->egid = egid;
-		else
+		} else
 			return(-EPERM);
 	}
 	return 0;
 }
 
+/*
+ * setgid() is implemeneted like SysV w/ SAVED_IDS 
+ */
 int sys_setgid(int gid)
 {
 	return(sys_setregid(gid, gid));
@@ -113,7 +127,16 @@ int sys_time(long * tloc)
 
 /*
  * Unprivileged users may change the real user id to the effective uid
- * or vice versa.
+ * or vice versa.  (BSD-style)
+ *
+ * When you set the effective uid, it sets the saved uid too.  This 
+ * makes it possible for a setuid program to completely drop its privileges,
+ * which is often a useful assertion to make when you are doing a security
+ * audit over a program.
+ *
+ * The general idea is that a program which uses just setreuid() will be
+ * 100% compatible with BSD.  A program which uses just setuid() will be
+ * 100% compatible with POSIX w/ Saved ID's. 
  */
 int sys_setreuid(int ruid, int euid)
 {
@@ -130,9 +153,9 @@ int sys_setreuid(int ruid, int euid)
 	if (euid>0) {
 		if ((old_ruid == euid) ||
                     (current->euid == euid) ||
-		    suser())
+		    suser()) {
 			current->euid = euid;
-		else {
+		} else {
 			current->uid = old_ruid;
 			return(-EPERM);
 		}
@@ -140,6 +163,17 @@ int sys_setreuid(int ruid, int euid)
 	return 0;
 }
 
+/*
+ * setuid() is implemeneted like SysV w/ SAVED_IDS 
+ * 
+ * Note that SAVED_ID's is deficient in that a setuid root program
+ * like sendmail, for example, cannot set its uid to be a normal 
+ * user and then switch back, because if you're root, setuid() sets
+ * the saved uid too.  If you don't like this, blame the bright people
+ * in the POSIX commmittee and/or USG.  Note that the BSD-style setreuid()
+ * will allow a root program to temporarily drop privileges and be able to
+ * regain them by swapping the real and effective uid.  
+ */
 int sys_setuid(int uid)
 {
 	return(sys_setreuid(uid, uid));
@@ -177,10 +211,14 @@ int sys_brk(unsigned long end_data_seg)
  * This needs some heave checking ...
  * I just haven't get the stomach for it. I also don't fully
  * understand sessions/pgrp etc. Let somebody who does explain it.
+ *
+ * OK, I think I have the protection semantics right.... this is really
+ * only important on a multi-user system anyway, to make sure one user
+ * can't send a signal to a process owned by another.  -TYT, 12/12/91
  */
 int sys_setpgid(int pid, int pgid)
 {
-	int i;
+	int i; 
 
 	if (!pid)
 		pid = current->pid;
@@ -234,3 +272,4 @@ int sys_umask(int mask)
 	current->umask = mask & 0777;
 	return (old);
 }
+

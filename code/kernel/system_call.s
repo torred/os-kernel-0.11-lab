@@ -30,9 +30,9 @@
  *	2C(%esp) - %oldss
  */
 
-SIG_CHLD	= 17
+SIG_CHLD	= 17		# 定义SIG_CHLD信号（子进程停止或结束
 
-EAX		= 0x00
+EAX		= 0x00			# 各寄存器的偏移
 EBX		= 0x04
 ECX		= 0x08
 EDX		= 0x0C
@@ -64,8 +64,8 @@ nr_system_calls = 74
  * Ok, I get parallel printer interrupts while using the floppy for some
  * strange reason. Urgel. Now I just ignore them.
  */
-.globl system_call,sys_fork,timer_interrupt,sys_execve
-.globl hd_interrupt,floppy_interrupt,parallel_interrupt
+.globl system_call, sys_fork, timer_interrupt, sys_execve
+.globl hd_interrupt, floppy_interrupt, parallel_interrupt
 .globl device_not_available, coprocessor_error
 
 .align 2
@@ -83,7 +83,7 @@ system_call:
 	push %ds
 	push %es
 	push %fs
-	pushl %edx
+	pushl %edx		
 	pushl %ecx		# push %ebx,%ecx,%edx as parameters
 	pushl %ebx		# to the system call
 	movl $0x10,%edx		# set up ds,es to kernel space
