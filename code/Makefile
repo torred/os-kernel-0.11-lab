@@ -1,8 +1,11 @@
 #
 # if you want the ram-disk device, define this to be the size in blocks.
 #
-RAMDISK =  #-DRAMDISK=512
-CLEAR_FILE = images/Image images/system images/system.map images/kernel images/system.tmp images/bootsect.map images/setup.map tmp_make
+RAMDISK      =  #-DRAMDISK=512
+CLEAR_FILE   = images/Image images/system images/system.map images/kernel images/system.S images/system.tmp images/bootsect.map images/setup.map tmp_make
+OBJDUMP_FILE = images/system.S
+NM_FILE      = images/system.map
+
 # -0: 使用16bit代码段　
 # -a: 开启与GNU as，ld部分兼容性选项
 #AS86	= $(QUIET_CC)as86 -0 -a
@@ -25,6 +28,7 @@ CFLAGS	+= $(RAMDISK)
 #
 # ROOT_DEV= #/dev/hd6
 # SWAP_DEV= #/dev/hd2
+
 ARCHIVES=kernel/kernel.o mm/mm.o fs/fs.o
 DRIVERS =kernel/blk_drv/blk_drv.a kernel/chr_drv/chr_drv.a
 MATH	=kernel/math/math.a
@@ -123,7 +127,8 @@ tools/system:	boot/head.o init/main.o \
 # -l line-numbers
 # -V version nm
 #  help nm
-	@nm images/system | grep -v '\(compiled\)\|\(\.o$$\)\|\( [aU] \)\|\(\.\.ng$$\)\|\(LASH[RL]DI\)'| sort > images/system.map
+	@$(NM) images/system | grep -v '\(compiled\)\|\(\.o$$\)\|\( [aU] \)\|\(\.\.ng$$\)\|\(LASH[RL]DI\)'| sort > images/system.map
+	@$(OBJDUMP) -S images/system > images/system.S
 
 kernel/math/math.a: FORCE
 	@make -C kernel/math
@@ -166,7 +171,6 @@ boot/bootsect: boot/bootsect.s FORCE
 # else
 #	exit -1;
 # endif
-
 
 clean:
 	@make clean -C rootfs

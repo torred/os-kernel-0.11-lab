@@ -15,6 +15,8 @@ QUIET_LINK     = @printf '    %b %b\n' $(LINKCOLOR)LINK$(ENDCOLOR) $(BINCOLOR)$@
 QUIET_RM       = printf '    %b %b\n' $(CCCOLOR)RM$(ENDCOLOR) $(SRCCOLOR)"$(CLEAR_FILE)"$(ENDCOLOR) 1>&2;
 QUIET_STRIP    = @printf '    %b %b\n' $(CCCOLOR)STRIP$(ENDCOLOR) $(SRCCOLOR)$@$(ENDCOLOR) 1>&2;
 QUIET_OBJCOPY  = @printf '    %b %b\n' $(CCCOLOR)OBJCOPY$(ENDCOLOR) $(SRCCOLOR)$@$(ENDCOLOR) 1>&2;
+QUIET_OBJDUMP  = @printf '    %b %b\n' $(CCCOLOR)OBJDUMP$(ENDCOLOR) $(SRCCOLOR)"$(OBJDUMP_FILE)"$(ENDCOLOR) 1>&2;
+QUIET_NM	   = @printf '    %b %b\n' $(CCCOLOR)NM$(ENDCOLOR) $(SRCCOLOR)"$(NM_FILE)"$(ENDCOLOR) 1>&2;
 QUIET_TAR      = @printf '    %b %b\n' $(CCCOLOR)TAR$(ENDCOLOR) $(SRCCOLOR)$<$(ENDCOLOR) 1>&2;
 QUIET_DEP      = @printf '    %b %b\n' $(CCCOLOR)CC$(ENDCOLOR) $(SRCCOLOR)$(PWD)/Makefile$(ENDCOLOR) 1>&2;
 
@@ -42,6 +44,8 @@ LD	= $(QUIET_LINK)$(TARGET)ld
 AR	= $(QUIET_AR)$(TARGET)ar
 STRIP	= $(QUIET_STRIP)$(TARGET)strip
 OBJCOPY = $(QUIET_OBJCOPY)$(TARGET)objcopy
+OBJDUMP = $(QUIET_OBJCOPY)$(TARGET)objdump
+NM = $(QUIET_OBJCOPY)$(TARGET)nm
 
 RM = $(QUIET_RM)rm
 TAR = $(QUIET_TAR)tar
@@ -117,7 +121,7 @@ LDFLAGS = -m elf_i386    # -M为0.12新增，会把所有过程信息答应出�
 
 # we should use -fno-stack-protector with gcc 4.3
 ifeq ($(OS), Linux)
-	CFLAGS  = -g -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce -w #-Wall
+	CFLAGS  = -g -O0 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce -w #-Wall
 else ifeq ($(OS), Darwin)
 	#CFLAGS  = -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce -w #-Wall
 	CFLAGS  = -g -O0 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce -w #-Wall
@@ -169,9 +173,10 @@ VM_CFG = tools/vm.cfg
 
 # ---------------------------------------------------------
 
-# >>>> Tool for specify root device
+# >>>> Tool for specify root device & swap device
 # ---------------------------------------------------------
 SETROOTDEV = tools/setrootdev.sh
+SETSWAPDEV = tools/setswapdev.sh
 # ---------------------------------------------------------
 
 # >>>> Specify the Rootfs Image file
@@ -180,3 +185,5 @@ HDA_IMG = hdc-0.11.img
 FLP_IMG = rootimage-0.11
 RAM_IMG = rootram.img
 # ---------------------------------------------------------
+
+gcc_version=${(4.4)}

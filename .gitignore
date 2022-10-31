@@ -1,1 +1,15 @@
 .DS_Store
+*.o
+*.a
+*.map
+setup
+Image
+bochsout.txt
+kernel
+system
+bootsect
+*.tmp
+keyboard.s
+*.img
+system.S
+*.pc

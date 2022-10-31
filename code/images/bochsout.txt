@@ -31,7 +31,7 @@
 00000000000i[      ]   Sound support: no
 00000000000i[      ]   USB support: UHCI OHCI
 00000000000i[      ]   VGA extension support: vbe
-00000000000i[MEM0  ] allocated memory at 0x7f86f3800000. after alignment, vector=0x7f86f3800000
+00000000000i[MEM0  ] allocated memory at 0x7fd99e800000. after alignment, vector=0x7fd99e800000
 00000000000i[MEM0  ] 16.00MB
 00000000000i[MEM0  ] mem block size = 0x00020000, blocks=128
 00000000000i[MEM0  ] rom at 0xfffe0000/131072 ('/usr/local/Cellar/bochs/2.6.11-x86/share/bochs/BIOS-bochs-latest')
@@ -41,7 +41,7 @@
 00000000000i[DEV   ] PIIX3 PCI-to-ISA bridge present at device 1, function 0
 00000000000i[PLUGIN] init_dev of 'cmos' plugin device by virtual method
 00000000000i[CMOS  ] Using local time for initial clock
-00000000000i[CMOS  ] Setting initial clock to: Mon Oct 17 21:14:46 2022 (time0=1666012486)
+00000000000i[CMOS  ] Setting initial clock to: Wed Oct 19 19:38:12 2022 (time0=1666179492)
 00000000000i[PLUGIN] init_dev of 'dma' plugin device by virtual method
 00000000000i[DMA   ] channel 4 used by cascade
 00000000000i[PLUGIN] init_dev of 'pic' plugin device by virtual method
@@ -58,7 +58,8 @@
 00000000000i[PLUGIN] init_dev of 'floppy' plugin device by virtual method
 00000000000i[DMA   ] channel 2 used by Floppy Drive
 00000000000i[FLOPPY] fd0: 'images/Image' ro=1, h=2,t=80,spt=18
-00000000000i[FLOPPY] fd1: 'rootfs/rootimage-0.11' ro=0, h=2,t=80,spt=18
+00000000000i[FLOPPY] tried to open 'rootfs/rootimage-0.11' read/write: No such file or directory
+00000000000i[FLOPPY] tried to open 'rootfs/rootimage-0.11' read only: No such file or directory
 00000000000i[FLOPPY] Using boot sequence floppy, none, none
 00000000000i[FLOPPY] Floppy boot signature check is enabled
 00000000000i[PLUGIN] init_dev of 'acpi' plugin device by virtual method
@@ -221,39 +222,7 @@
 00001901311i[BIOS  ] ata0-0: PCHS=204/16/38 translation=none LCHS=204/16/38
 00005348489i[BIOS  ] IDE time out
 00017555412i[BIOS  ] Booting from 0000:7c00
-00027948519i[FLOPPY] partial read() on floppy image returns 100/512
-00027992963i[FLOPPY] read() on floppy image returns 0
-00028037407i[FLOPPY] read() on floppy image returns 0
-00028081851i[FLOPPY] read() on floppy image returns 0
-00028126295i[FLOPPY] read() on floppy image returns 0
-00028170739i[FLOPPY] read() on floppy image returns 0
-00028215183i[FLOPPY] read() on floppy image returns 0
-00028259627i[FLOPPY] read() on floppy image returns 0
-00028304071i[FLOPPY] read() on floppy image returns 0
-00028348515i[FLOPPY] read() on floppy image returns 0
-00028392959i[FLOPPY] read() on floppy image returns 0
-00028437403i[FLOPPY] read() on floppy image returns 0
-00028481847i[FLOPPY] read() on floppy image returns 0
-00028526291i[FLOPPY] read() on floppy image returns 0
-00028570735i[FLOPPY] read() on floppy image returns 0
-00028615179i[FLOPPY] read() on floppy image returns 0
-00028659623i[FLOPPY] read() on floppy image returns 0
-00028704067i[FLOPPY] read() on floppy image returns 0
-00028749553i[FLOPPY] read() on floppy image returns 0
-00028793997i[FLOPPY] read() on floppy image returns 0
-00028838441i[FLOPPY] read() on floppy image returns 0
-00028882885i[FLOPPY] read() on floppy image returns 0
-00028927329i[FLOPPY] read() on floppy image returns 0
-00028971773i[FLOPPY] read() on floppy image returns 0
-00029016217i[FLOPPY] read() on floppy image returns 0
-00029060661i[FLOPPY] read() on floppy image returns 0
-00029105105i[FLOPPY] read() on floppy image returns 0
-00029150585i[FLOPPY] read() on floppy image returns 0
-00029195029i[FLOPPY] read() on floppy image returns 0
-00029239473i[FLOPPY] read() on floppy image returns 0
-00029283917i[FLOPPY] read() on floppy image returns 0
-00029328361i[FLOPPY] read() on floppy image returns 0
-00029372805i[FLOPPY] read() on floppy image returns 0
+00029372805i[FLOPPY] partial read() on floppy image returns 129/512
 00029417249i[FLOPPY] read() on floppy image returns 0
 00029461693i[FLOPPY] read() on floppy image returns 0
 00029506137i[FLOPPY] read() on floppy image returns 0
@@ -377,23 +346,23 @@
 00034757810i[FLOPPY] read() on floppy image returns 0
 00034802254i[FLOPPY] read() on floppy image returns 0
 00034967956i[BIOS  ] int13_harddisk: function 15, unmapped device for ELDL=81
-00117684000p[SDL2  ] >>PANIC<< POWER button turned off.
-00117684000i[CPU0  ] CPU is in protected mode (active)
-00117684000i[CPU0  ] CS.mode = 32 bit
-00117684000i[CPU0  ] SS.mode = 32 bit
-00117684000i[CPU0  ] EFER   = 0x00000000
-00117684000i[CPU0  ] | EAX=00000020  EBX=00019160  ECX=ffffffff  EDX=ffffffff
-00117684000i[CPU0  ] | ESP=0001a234  EBP=0001fe6c  ESI=00000000  EDI=00000ffc
-00117684000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf sf ZF af PF cf
-00117684000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
-00117684000i[CPU0  ] |  CS:0008( 0001| 0|  0) 00000000 00ffffff 1 1
-00117684000i[CPU0  ] |  DS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
-00117684000i[CPU0  ] |  SS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
-00117684000i[CPU0  ] |  ES:0010( 0002| 0|  0) 00000000 00ffffff 1 1
-00117684000i[CPU0  ] |  FS:0017( 0002| 1|  3) 00000000 0009ffff 1 1
-00117684000i[CPU0  ] |  GS:0017( 0002| 1|  3) 00000000 0009ffff 1 1
-00117684000i[CPU0  ] | EIP=00006c52 (00006c52)
-00117684000i[CPU0  ] | CR0=0x8000001b CR2=0x08032ef0
-00117684000i[CPU0  ] | CR3=0x00000000 CR4=0x00000000
-00117684000i[CMOS  ] Last time is 1666012515 (Mon Oct 17 21:15:15 2022)
-00117684000i[SIM   ] quit_sim called with exit code 1
+00235956000p[SDL2  ] >>PANIC<< POWER button turned off.
+00235956000i[CPU0  ] CPU is in protected mode (active)
+00235956000i[CPU0  ] CS.mode = 32 bit
+00235956000i[CPU0  ] SS.mode = 32 bit
+00235956000i[CPU0  ] EFER   = 0x00000000
+00235956000i[CPU0  ] | EAX=00000000  EBX=00000000  ECX=ffffffff  EDX=00000000
+00235956000i[CPU0  ] | ESP=0001e110  EBP=00023e88  ESI=ffffffff  EDI=00000000
+00235956000i[CPU0  ] | IOPL=0 id vip vif ac vm rf nt of df IF tf SF zf af PF cf
+00235956000i[CPU0  ] | SEG sltr(index|ti|rpl)     base    limit G D
+00235956000i[CPU0  ] |  CS:0008( 0001| 0|  0) 00000000 00ffffff 1 1
+00235956000i[CPU0  ] |  DS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
+00235956000i[CPU0  ] |  SS:0010( 0002| 0|  0) 00000000 00ffffff 1 1
+00235956000i[CPU0  ] |  ES:0010( 0002| 0|  0) 00000000 00ffffff 1 1
+00235956000i[CPU0  ] |  FS:0017( 0002| 1|  3) 00000000 0009ffff 1 1
+00235956000i[CPU0  ] |  GS:0017( 0002| 1|  3) 00000000 0009ffff 1 1
+00235956000i[CPU0  ] | EIP=00006d72 (00006d72)
+00235956000i[CPU0  ] | CR0=0x8000001b CR2=0x08032ef0
+00235956000i[CPU0  ] | CR3=0x00000000 CR4=0x00000000
+00235956000i[CMOS  ] Last time is 1666179550 (Wed Oct 19 19:39:10 2022)
+00235956000i[SIM   ] quit_sim called with exit code 1

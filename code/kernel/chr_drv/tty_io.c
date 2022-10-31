@@ -110,11 +110,6 @@ struct tty_queue * table_list[]={
 	&tty_table[2].read_q, &tty_table[2].write_q
 	};
 
-void tty_init(void)
-{
-	rs_init();
-	con_init();
-}
 
 void tty_intr(struct tty_struct * tty, int mask)
 {
@@ -356,3 +351,14 @@ void do_tty_interrupt(int tty)
 void chr_dev_init(void)
 {
 }
+
+// tty终端初始化函数
+// 初始化所有终端缓冲队列,初始化串口终端和控制台终端.
+void tty_init(void)
+{
+	con_init();
+	
+	// 最后初始化串行中断处理程序和串行接口1和2（serial.c），并显示系统含有的虚拟控制台数NR_CONSOLES和伪终端数NR_PTYS。
+	rs_init();
+}
+
